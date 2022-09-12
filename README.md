@@ -1,1 +1,1 @@
-# lets-go-nauka
+# Golang snippetbox project
