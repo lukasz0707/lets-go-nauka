@@ -41,11 +41,17 @@ func main() {
 	// all URL paths that start with "/static/". For matching paths, we strip t
 	// "/static" prefix before the request reaches the file server.
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
-	// The value returned from the flag.String() function is a pointer to the fl
-	// value, not the value itself. So we need to dereference the pointer (i.e.
-	// prefix it with the * symbol) before using it.
-	// Write messages using the two new loggers, instead of the standard logger
+	// Initialize a new http.Server struct. We set the Addr and Handler fields
+	// that the server uses the same network address and routes as before, and
+	// the ErrorLog field so that the server now uses the custom errorLog logge
+	// the event of any problems.
+	srv := &http.Server{
+		Addr:     *addr,
+		ErrorLog: errorLog,
+		Handler:  mux,
+	}
 	infoLog.Printf("Starting server on %s", *addr)
-	err := http.ListenAndServe(*addr, mux)
+	// Call the ListenAndServe() method on our new http.Server struct.
+	err := srv.ListenAndServe()
 	errorLog.Fatal(err)
 }
