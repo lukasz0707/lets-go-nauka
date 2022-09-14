@@ -5,8 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"html/template"
-
 	"github.com/lukasz0707/snippetbox/pkg/models"
 )
 
@@ -23,24 +21,10 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 		return
 	}
-	data := &templateData{Snippets: s}
-
-	files := []string{
-		"./ui/html/home.page.html",
-		"./ui/html/base.layout.html",
-		"./ui/html/footer.partial.html",
-	}
-
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, err) // Use the serverError() helper.
-		return
-	}
-
-	err = ts.Execute(w, data)
-	if err != nil {
-		app.serverError(w, err) // Use the serverError() helper.
-	}
+	// Use the new render helper.
+	app.render(w, r, "home.page.html", &templateData{
+		Snippets: s,
+	})
 }
 
 // Change the signature of the showSnippet handler so it is defined as a method
@@ -60,25 +44,10 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create an instance of a templateData struct holding the snippet data.
-	data := &templateData{Snippet: s}
-
-	files := []string{
-		"./ui/html/show.page.html",
-		"./ui/html/base.layout.html",
-		"./ui/html/footer.partial.html",
-	}
-	// Parse the template files...
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-	// Pass in the templateData struct when executing the template.
-	err = ts.Execute(w, data)
-	if err != nil {
-		app.serverError(w, err)
-	}
+	// Use the new render helper.
+	app.render(w, r, "show.page.html", &templateData{
+		Snippet: s,
+	})
 
 }
 
