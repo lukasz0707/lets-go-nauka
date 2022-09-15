@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"runtime/debug"
+	"time"
 )
 
 // The serverError helper writes an error message and stack trace to the errorLo
@@ -41,7 +42,7 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, name stri
 	buf := new(bytes.Buffer)
 
 	// Execute the template set, passing in any dynamic data.
-	err := ts.Execute(buf, td)
+	err := ts.Execute(buf, app.addDefaultData(td, r))
 	if err != nil {
 		app.serverError(w, err)
 		return
@@ -51,4 +52,12 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, name stri
 	// is another time where we pass our http.ResponseWriter to a function that
 	// takes an io.Writer.
 	buf.WriteTo(w)
+}
+
+func (app *application) addDefaultData(td *templateData, r *http.Request) *templateData {
+	if td == nil {
+		td = &templateData{}
+	}
+	td.CurrentYear = time.Now().Year()
+	return td
 }
