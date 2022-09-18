@@ -54,12 +54,15 @@ func (app *application) createSnippetForm(w http.ResponseWriter, r *http.Request
 // Change the signature of the createSnippet handler so it is defined as a metho
 // against *application.
 func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
 
-	// Create some variables holding dummy data. We'll remove these later on
-	// during the build.
-	title := "O snail"
-	content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi"
-	expires := "7"
+	title := r.PostForm.Get("title")
+	content := r.PostForm.Get("content")
+	expires := r.PostForm.Get("expires")
 
 	// Pass the data to the SnippetModel.Insert() method, receiving the
 	// ID of the new record back.
