@@ -12,7 +12,7 @@ require (
 	github.com/golangcollege/sessions v1.2.0
 )
 
-require github.com/justinas/nosurf v1.1.1 // indirect
+require github.com/justinas/nosurf v1.1.1
 
 require (
 	golang.org/x/crypto v0.0.0-20200317142112-1b76d66859c6
